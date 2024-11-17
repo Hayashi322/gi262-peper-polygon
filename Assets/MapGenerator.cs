@@ -12,7 +12,7 @@ public class WalkerGenerator : MonoBehaviour
         EMPTY
     }
 
-    // Variables
+    //Variables
     public Grid[,] gridHandler;
     public List<WalkerObject> Walkers;
     public Tilemap wallTileMap;   // สำหรับ Wall
@@ -27,14 +27,9 @@ public class WalkerGenerator : MonoBehaviour
     public float FillPercentage = 0.4f;
     public float WaitTime = 0.05f;
 
-    // การเพิ่มไอเท็มที่สุ่มได้
-    public GameObject[] itemPrefabs;  // อาร์เรย์ของไอเท็มที่สามารถ spawn
-    public float spawnInterval = 2f;  // เวลาระหว่างการ spawn ไอเท็มใหม่ (ในวินาที)
-
     void Start()
     {
         InitializeGrid();
-        StartCoroutine(SpawnItems());  // เริ่มการ spawn ไอเท็ม
     }
 
     void InitializeGrid()
@@ -69,11 +64,16 @@ public class WalkerGenerator : MonoBehaviour
 
         switch (choice)
         {
-            case 0: return Vector2.down;
-            case 1: return Vector2.left;
-            case 2: return Vector2.up;
-            case 3: return Vector2.right;
-            default: return Vector2.zero;
+            case 0:
+                return Vector2.down;
+            case 1:
+                return Vector2.left;
+            case 2:
+                return Vector2.up;
+            case 3:
+                return Vector2.right;
+            default:
+                return Vector2.zero;
         }
     }
 
@@ -204,34 +204,6 @@ public class WalkerGenerator : MonoBehaviour
                         yield return new WaitForSeconds(WaitTime);
                     }
                 }
-            }
-        }
-    }
-
-    // ฟังก์ชันสุ่มไอเท็ม
-    IEnumerator SpawnItems()
-    {
-        while (true)
-        {
-            // สุ่มตำแหน่งที่เป็น Floor (FLOOR) เพื่อ spawn ไอเท็ม
-            List<Vector3Int> floorPositions = new List<Vector3Int>();
-            for (int x = 0; x < MapWidth; x++)
-            {
-                for (int y = 0; y < MapHeight; y++)
-                {
-                    Vector3Int tilePos = new Vector3Int(x, y, 0);
-                    if (gridHandler[x, y] == Grid.FLOOR)
-                    {
-                        floorPositions.Add(tilePos);
-                    }
-                }
-            }
-
-            // สุ่มตำแหน่งการ spawn
-            if (floorPositions.Count > 0)
-            {
-                Vector3Int randomPos = floorPositions[Random.Range(0, floorPositions.Count)];
-                GameObject randomItem = itemPrefabs[Random.Range(0, itemPrefabs.Length)];
             }
         }
     }
