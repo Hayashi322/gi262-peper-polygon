@@ -288,7 +288,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a94b10f33c0c284bb1ce40bced9c7c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileMap: {fileID: 1232612948}
+  wallTileMap: {fileID: 0}
+  floorTileMap: {fileID: 0}
   Floor: {fileID: 11400000, guid: e4066be044d610048afd51be2d3cfd20, type: 2}
   Wall: {fileID: 11400000, guid: eb046ae2a5ad2264a8357afc32d38a0f, type: 2}
   MapWidth: 60
@@ -493,7 +494,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
+  m_Sprite: {fileID: 21300000, guid: fbe1e7b94bb1a4a099d5bcb15a00141c, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -533,6 +534,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 5
+  collisionCheckDistance: 0.7
 --- !u!50 &1880115243
 Rigidbody2D:
   serializedVersion: 4

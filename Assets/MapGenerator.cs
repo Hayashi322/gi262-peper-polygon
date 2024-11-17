@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -12,10 +12,11 @@ public class WalkerGenerator : MonoBehaviour
         EMPTY
     }
 
-    //Variables
+    // Variables
     public Grid[,] gridHandler;
     public List<WalkerObject> Walkers;
-    public Tilemap tileMap;
+    public Tilemap wallTileMap;   // สำหรับ Wall
+    public Tilemap floorTileMap;  // สำหรับ Floor
     public Tile Floor;
     public Tile Wall;
     public int MapWidth = 30;
@@ -26,9 +27,14 @@ public class WalkerGenerator : MonoBehaviour
     public float FillPercentage = 0.4f;
     public float WaitTime = 0.05f;
 
+    // การเพิ่มไอเท็มที่สุ่มได้
+    public GameObject[] itemPrefabs;  // อาร์เรย์ของไอเท็มที่สามารถ spawn
+    public float spawnInterval = 2f;  // เวลาระหว่างการ spawn ไอเท็มใหม่ (ในวินาที)
+
     void Start()
     {
         InitializeGrid();
+        StartCoroutine(SpawnItems());  // เริ่มการ spawn ไอเท็ม
     }
 
     void InitializeGrid()
@@ -49,7 +55,7 @@ public class WalkerGenerator : MonoBehaviour
 
         WalkerObject curWalker = new WalkerObject(new Vector2(TileCenter.x, TileCenter.y), GetDirection(), 0.5f);
         gridHandler[TileCenter.x, TileCenter.y] = Grid.FLOOR;
-        tileMap.SetTile(TileCenter, Floor);
+        floorTileMap.SetTile(TileCenter, Floor);
         Walkers.Add(curWalker);
 
         TileCount++;
@@ -63,16 +69,11 @@ public class WalkerGenerator : MonoBehaviour
 
         switch (choice)
         {
-            case 0:
-                return Vector2.down;
-            case 1:
-                return Vector2.left;
-            case 2:
-                return Vector2.up;
-            case 3:
-                return Vector2.right;
-            default:
-                return Vector2.zero;
+            case 0: return Vector2.down;
+            case 1: return Vector2.left;
+            case 2: return Vector2.up;
+            case 3: return Vector2.right;
+            default: return Vector2.zero;
         }
     }
 
@@ -87,7 +88,7 @@ public class WalkerGenerator : MonoBehaviour
 
                 if (gridHandler[curPos.x, curPos.y] != Grid.FLOOR)
                 {
-                    tileMap.SetTile(curPos, Floor);
+                    floorTileMap.SetTile(curPos, Floor);
                     TileCount++;
                     gridHandler[curPos.x, curPos.y] = Grid.FLOOR;
                     hasCreatedFloor = true;
@@ -175,25 +176,25 @@ public class WalkerGenerator : MonoBehaviour
 
                     if (gridHandler[x + 1, y] == Grid.EMPTY)
                     {
-                        tileMap.SetTile(new Vector3Int(x + 1, y, 0), Wall);
+                        wallTileMap.SetTile(new Vector3Int(x + 1, y, 0), Wall);
                         gridHandler[x + 1, y] = Grid.WALL;
                         hasCreatedWall = true;
                     }
                     if (gridHandler[x - 1, y] == Grid.EMPTY)
                     {
-                        tileMap.SetTile(new Vector3Int(x - 1, y, 0), Wall);
+                        wallTileMap.SetTile(new Vector3Int(x - 1, y, 0), Wall);
                         gridHandler[x - 1, y] = Grid.WALL;
                         hasCreatedWall = true;
                     }
                     if (gridHandler[x, y + 1] == Grid.EMPTY)
                     {
-                        tileMap.SetTile(new Vector3Int(x, y + 1, 0), Wall);
+                        wallTileMap.SetTile(new Vector3Int(x, y + 1, 0), Wall);
                         gridHandler[x, y + 1] = Grid.WALL;
                         hasCreatedWall = true;
                     }
                     if (gridHandler[x, y - 1] == Grid.EMPTY)
                     {
-                        tileMap.SetTile(new Vector3Int(x, y - 1, 0), Wall);
+                        wallTileMap.SetTile(new Vector3Int(x, y - 1, 0), Wall);
                         gridHandler[x, y - 1] = Grid.WALL;
                         hasCreatedWall = true;
                     }
@@ -206,6 +207,35 @@ public class WalkerGenerator : MonoBehaviour
             }
         }
     }
+
+    // ฟังก์ชันสุ่มไอเท็ม
+    IEnumerator SpawnItems()
+    {
+        while (true)
+        {
+            // สุ่มตำแหน่งที่เป็น Floor (FLOOR) เพื่อ spawn ไอเท็ม
+            List<Vector3Int> floorPositions = new List<Vector3Int>();
+            for (int x = 0; x < MapWidth; x++)
+            {
+                for (int y = 0; y < MapHeight; y++)
+                {
+                    Vector3Int tilePos = new Vector3Int(x, y, 0);
+                    if (gridHandler[x, y] == Grid.FLOOR)
+                    {
+                        floorPositions.Add(tilePos);
+                    }
+                }
+            }
+
+            // สุ่มตำแหน่งการ spawn
+            if (floorPositions.Count > 0)
+            {
+                Vector3Int randomPos = floorPositions[Random.Range(0, floorPositions.Count)];
+                GameObject randomItem = itemPrefabs[Random.Range(0, itemPrefabs.Length)];
+            }
+        }
+    }
 }
+
 
 
