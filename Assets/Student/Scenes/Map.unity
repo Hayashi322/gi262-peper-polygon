@@ -391,6 +391,7 @@ GameObject:
   - component: {fileID: 1142941951}
   - component: {fileID: 1142941950}
   - component: {fileID: 1142941952}
+  - component: {fileID: 1142941953}
   m_Layer: 0
   m_Name: MapGenerator
   m_TagString: Untagged
@@ -453,6 +454,24 @@ MonoBehaviour:
   - {fileID: 6476303242912763235, guid: 86926da40248a04478456d108c6fae6d, type: 3}
   - {fileID: 6476303242912763235, guid: 76f2f38c664723b42aea03f157bcc7ae, type: 3}
   spawnInterval: 2
+--- !u!114 &1142941953
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1142941949}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49850be9f0e614a4b9b1edf0195f80dc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  floorTileMap: {fileID: 762675547}
+  floorTile: {fileID: 11400000, guid: e4066be044d610048afd51be2d3cfd20, type: 2}
+  wallTile: {fileID: 11400000, guid: eb046ae2a5ad2264a8357afc32d38a0f, type: 2}
+  objectPrefabs:
+  - {fileID: 368901536445415501, guid: 23a98d10f71bf4249bcf70d993a70652, type: 3}
+  spawnAreaSize: {x: 9, y: 9, z: 1}
 --- !u!1 &1232612945
 GameObject:
   m_ObjectHideFlags: 0
