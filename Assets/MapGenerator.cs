@@ -11,7 +11,6 @@ public class WalkerGenerator : MonoBehaviour
         WALL,
         EMPTY
     }
-
     //Variables
     public Grid[,] gridHandler;
     public List<WalkerObject> Walkers;
@@ -21,21 +20,18 @@ public class WalkerGenerator : MonoBehaviour
     public Tile Wall;
     public int MapWidth = 30;
     public int MapHeight = 30;
-
     public int MaximumWalkers = 10;
     public int TileCount = default;
     public float FillPercentage = 0.4f;
     public float WaitTime = 0.05f;
-
+    Vector2 checkPointPos;
     void Start()
     {
         InitializeGrid();
     }
-
     void InitializeGrid()
     {
         gridHandler = new Grid[MapWidth, MapHeight];
-
         for (int x = 0; x < gridHandler.GetLength(0); x++)
         {
             for (int y = 0; y < gridHandler.GetLength(1); y++)
@@ -43,25 +39,22 @@ public class WalkerGenerator : MonoBehaviour
                 gridHandler[x, y] = Grid.EMPTY;
             }
         }
-
         Walkers = new List<WalkerObject>();
-
+        // กำหนดตำแหน่งของ Checkpoint ที่ (30, 30, -10)
+        Vector3 checkpointPosition = new Vector3(30, 30, -10); // คุณสามารถปรับตำแหน่งได้ที่นี่
+        CheckpointManager.instance.SetCheckpoint(checkpointPosition);  // ตั้งค่าตำแหน่ง checkpoint
+        Debug.Log("Checkpoint set at: " + checkpointPosition);
         Vector3Int TileCenter = new Vector3Int(gridHandler.GetLength(0) / 2, gridHandler.GetLength(1) / 2, 0);
-
         WalkerObject curWalker = new WalkerObject(new Vector2(TileCenter.x, TileCenter.y), GetDirection(), 0.5f);
         gridHandler[TileCenter.x, TileCenter.y] = Grid.FLOOR;
         floorTileMap.SetTile(TileCenter, Floor);
         Walkers.Add(curWalker);
-
         TileCount++;
-
         StartCoroutine(CreateFloors());
     }
-
     Vector2 GetDirection()
     {
         int choice = Mathf.FloorToInt(UnityEngine.Random.value * 3.99f);
-
         switch (choice)
         {
             case 0:
@@ -76,7 +69,6 @@ public class WalkerGenerator : MonoBehaviour
                 return Vector2.zero;
         }
     }
-
     IEnumerator CreateFloors()
     {
         while ((float)TileCount / (float)gridHandler.Length < FillPercentage)
@@ -85,7 +77,6 @@ public class WalkerGenerator : MonoBehaviour
             foreach (WalkerObject curWalker in Walkers)
             {
                 Vector3Int curPos = new Vector3Int((int)curWalker.Position.x, (int)curWalker.Position.y, 0);
-
                 if (gridHandler[curPos.x, curPos.y] != Grid.FLOOR)
                 {
                     floorTileMap.SetTile(curPos, Floor);
@@ -94,22 +85,18 @@ public class WalkerGenerator : MonoBehaviour
                     hasCreatedFloor = true;
                 }
             }
-
             //Walker Methods
             ChanceToRemove();
             ChanceToRedirect();
             ChanceToCreate();
             UpdatePosition();
-
             if (hasCreatedFloor)
             {
                 yield return new WaitForSeconds(WaitTime);
             }
         }
-
         StartCoroutine(CreateWalls());
     }
-
     void ChanceToRemove()
     {
         int updatedCount = Walkers.Count;
@@ -122,7 +109,6 @@ public class WalkerGenerator : MonoBehaviour
             }
         }
     }
-
     void ChanceToRedirect()
     {
         for (int i = 0; i < Walkers.Count; i++)
@@ -135,7 +121,6 @@ public class WalkerGenerator : MonoBehaviour
             }
         }
     }
-
     void ChanceToCreate()
     {
         int updatedCount = Walkers.Count;
@@ -145,13 +130,11 @@ public class WalkerGenerator : MonoBehaviour
             {
                 Vector2 newDirection = GetDirection();
                 Vector2 newPosition = Walkers[i].Position;
-
                 WalkerObject newWalker = new WalkerObject(newPosition, newDirection, 0.5f);
                 Walkers.Add(newWalker);
             }
         }
     }
-
     void UpdatePosition()
     {
         for (int i = 0; i < Walkers.Count; i++)
@@ -163,7 +146,6 @@ public class WalkerGenerator : MonoBehaviour
             Walkers[i] = FoundWalker;
         }
     }
-
     IEnumerator CreateWalls()
     {
         for (int x = 0; x < gridHandler.GetLength(0) - 1; x++)
@@ -173,7 +155,6 @@ public class WalkerGenerator : MonoBehaviour
                 if (gridHandler[x, y] == Grid.FLOOR)
                 {
                     bool hasCreatedWall = false;
-
                     if (gridHandler[x + 1, y] == Grid.EMPTY)
                     {
                         wallTileMap.SetTile(new Vector3Int(x + 1, y, 0), Wall);
@@ -198,7 +179,6 @@ public class WalkerGenerator : MonoBehaviour
                         gridHandler[x, y - 1] = Grid.WALL;
                         hasCreatedWall = true;
                     }
-
                     if (hasCreatedWall)
                     {
                         yield return new WaitForSeconds(WaitTime);
