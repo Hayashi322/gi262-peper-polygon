@@ -40,10 +40,7 @@ public class WalkerGenerator : MonoBehaviour
             }
         }
         Walkers = new List<WalkerObject>();
-        // กำหนดตำแหน่งของ Checkpoint ที่ (30, 30, -10)
-        Vector3 checkpointPosition = new Vector3(30, 30, -10); // คุณสามารถปรับตำแหน่งได้ที่นี่
-        CheckpointManager.instance.SetCheckpoint(checkpointPosition);  // ตั้งค่าตำแหน่ง checkpoint
-        Debug.Log("Checkpoint set at: " + checkpointPosition);
+       
         Vector3Int TileCenter = new Vector3Int(gridHandler.GetLength(0) / 2, gridHandler.GetLength(1) / 2, 0);
         WalkerObject curWalker = new WalkerObject(new Vector2(TileCenter.x, TileCenter.y), GetDirection(), 0.5f);
         gridHandler[TileCenter.x, TileCenter.y] = Grid.FLOOR;
@@ -96,6 +93,34 @@ public class WalkerGenerator : MonoBehaviour
             }
         }
         StartCoroutine(CreateWalls());
+        PlaceRandomCheckpoint(); // เรียกใช้ฟังก์ชันวาง Checkpoint
+    }
+
+    void PlaceRandomCheckpoint()
+    {
+        List<Vector3Int> floorTiles = new List<Vector3Int>();
+
+        // ค้นหาทุกตำแหน่งที่เป็น FLOOR
+        for (int x = 0; x < gridHandler.GetLength(0); x++)
+        {
+            for (int y = 0; y < gridHandler.GetLength(1); y++)
+            {
+                if (gridHandler[x, y] == Grid.FLOOR)
+                {
+                    floorTiles.Add(new Vector3Int(x, y, 0));
+                }
+            }
+        }
+
+        // สุ่มตำแหน่งจาก Floor Tiles
+        if (floorTiles.Count > 0)
+        {
+            Vector3Int randomPosition = floorTiles[Random.Range(0, floorTiles.Count)];
+            Vector3 checkpointWorldPosition = floorTileMap.CellToWorld(randomPosition) + new Vector3(0.5f, 0.5f, 0);
+
+            CheckpointManager.instance.SetCheckpoint(checkpointWorldPosition);
+            Debug.Log("Checkpoint set at: " + checkpointWorldPosition);
+        }
     }
     void ChanceToRemove()
     {

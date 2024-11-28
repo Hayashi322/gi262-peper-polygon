@@ -55,7 +55,7 @@ public class ObjectSpawner : MonoBehaviour
             // สุ่มเลือกวัตถุจาก objectPrefabs ที่มี 2 แบบ
             GameObject randomObject = objectPrefabs[Random.Range(0, objectPrefabs.Length)];
             // Spawn วัตถุในตำแหน่งที่สุ่ม
-            Instantiate(randomObject, new Vector3(randomPos.x + 0.5f, randomPos.y + 0.5f, 0), Quaternion.identity);
+            Instantiate(randomObject, new Vector3(randomPos.x + 0.5f, randomPos.y + 0.5f, -10), Quaternion.identity);
         }
     }
     // ฟังก์ชันตรวจสอบว่าตำแหน่งเป็น "Wall" หรือไม่
